@@ -1,11 +1,35 @@
 import React, { useState, useEffect } from 'react'
 
+// Cole aqui a URL gerada pelo Google Apps Script após o deploy
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyEJR59iCyKseh5JNGKXVqtMFgb2iytZpkIm_ppyyvb4bojpoGvybvubww71fGPFeH4EA/exec';
+
 function WaitlistModal({onClose}){
   const[name,setName]=useState('');
   const[email,setEmail]=useState('');
   const[loading,setLoading]=useState(false);
   const[done,setDone]=useState(false);
-  const submit=e=>{e.preventDefault();if(!name.trim()||!email.trim())return;setLoading(true);setTimeout(()=>{setLoading(false);setDone(true);},1400);};
+  const[error,setError]=useState('');
+
+  const submit=async e=>{
+    e.preventDefault();
+    if(!name.trim()||!email.trim())return;
+    setLoading(true);
+    setError('');
+    try{
+      await fetch(APPS_SCRIPT_URL,{
+        method:'POST',
+        mode:'no-cors',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({name:name.trim(),email:email.trim(),date:new Date().toISOString()}),
+      });
+      // no-cors não expõe o status, mas se fetch não lançou é porque a requisição saiu
+      setDone(true);
+    }catch(err){
+      setError('Não foi possível enviar. Verifique sua conexão e tente novamente.');
+    }finally{
+      setLoading(false);
+    }
+  };
   useEffect(()=>{const fn=e=>{if(e.key==='Escape')onClose();};window.addEventListener('keydown',fn);return()=>window.removeEventListener('keydown',fn);},[]);
   return(
     <div style={{position:'fixed',inset:0,zIndex:9000,background:'rgba(0,0,0,0.82)',backdropFilter:'blur(10px)',display:'flex',alignItems:'center',justifyContent:'center',padding:16}} onClick={onClose}>
@@ -25,8 +49,9 @@ function WaitlistModal({onClose}){
               <input type="text" placeholder="Seu nome" value={name} onChange={e=>setName(e.target.value)} required style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:10,padding:'13px 16px',color:'#f5f5f5',fontSize:15,width:'100%',outline:'none',transition:'border-color .2s'}} onFocus={e=>e.target.style.borderColor='rgba(245,158,11,0.45)'} onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.1)'}/>
               <input type="email" placeholder="Seu e-mail" value={email} onChange={e=>setEmail(e.target.value)} required style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:10,padding:'13px 16px',color:'#f5f5f5',fontSize:15,width:'100%',outline:'none',transition:'border-color .2s'}} onFocus={e=>e.target.style.borderColor='rgba(245,158,11,0.45)'} onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.1)'}/>
               <button type="submit" disabled={loading} style={{background:loading?'#b45309':'#f59e0b',color:'#000',border:'none',padding:'14px',borderRadius:10,fontSize:15,fontWeight:700,cursor:loading?'not-allowed':'pointer',transition:'all .2s',marginTop:4,letterSpacing:'-0.01em'}}>
-                {loading?'Entrando...':'Entrar na lista de espera'}
+                {loading?'Enviando...':'Entrar na lista de espera'}
               </button>
+              {error&&<p style={{fontSize:13,color:'#f87171',textAlign:'center',marginTop:4,lineHeight:1.5}}>{error}</p>}
               <p style={{fontSize:12,color:'#6b7280',textAlign:'center',marginTop:4}}>Sem spam. Você só receberá o aviso de lançamento.</p>
             </form>
           </>
