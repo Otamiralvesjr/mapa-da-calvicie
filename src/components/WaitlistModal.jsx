@@ -59,7 +59,7 @@ function WaitlistModal({onClose}){
           <div style={{textAlign:'center',padding:'16px 0'}}>
             <div style={{width:60,height:60,borderRadius:'50%',background:'rgba(245,158,11,0.1)',border:'1px solid rgba(245,158,11,0.2)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 22px',fontSize:24,color:'#f59e0b'}}>✓</div>
             <h3 style={{fontSize:21,fontWeight:800,marginBottom:12,letterSpacing:'-0.03em'}}>Você está na lista!</h3>
-            <p style={{fontSize:14,color:'#9ca3af',lineHeight:1.68,maxWidth:320,margin:'0 auto 26px'}}>Assim que o guia for lançado, você será um dos primeiros a receber o aviso — com o preço de lançamento.</p>
+            <p style={{fontSize:14,color:'#9ca3af',lineHeight:1.75,maxWidth:320,margin:'0 auto 26px'}}>Obrigado por confiar no projeto.<br/><br/>Quando o guia estiver pronto, você será um dos primeiros a receber o acesso.<br/><br/>Até lá, vou continuar compartilhando aprendizados reais sobre calvície, tratamentos e tomada de decisão.</p>
             <button onClick={onClose} style={{background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.12)',color:'#e5e5e5',padding:'10px 22px',borderRadius:8,fontSize:14,fontWeight:500,cursor:'pointer',transition:'all .2s'}} onMouseEnter={e=>e.currentTarget.style.background='rgba(255,255,255,0.12)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(255,255,255,0.07)'}>Fechar</button>
           </div>
         )}
